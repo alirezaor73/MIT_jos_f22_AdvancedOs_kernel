@@ -911,7 +911,8 @@ check_va2pa(pml4e_t *pml4e, uintptr_t va)
 
 
 // check page_insert, page_remove, &c
-static void page_check(void)
+static void
+page_check(void)
 {
 	struct PageInfo *pp0, *pp1, *pp2,*pp3,*pp4,*pp5;
 	struct PageInfo * fl;
