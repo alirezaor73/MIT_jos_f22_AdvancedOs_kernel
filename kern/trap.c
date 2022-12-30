@@ -8,11 +8,44 @@
 #include <kern/monitor.h>
 #include <kern/env.h>
 #include <kern/syscall.h>
+#include <kern/kclock.h>
+
 
 extern uintptr_t gdtdesc_64;
 struct Taskstate ts;
 extern struct Segdesc gdt[];
 extern long gdt_pd;
+
+
+
+
+
+
+
+
+
+extern void DIVIDE_F();
+extern void DEBUG_F();
+extern void NMI_F();
+extern void BRKPT_F();
+extern void OFLOW_F();
+extern void BOUND_F();
+extern void ILLOP_F();
+extern void DEVICE_F();
+extern void DBLFLT_F();
+extern void TSS_F();
+extern void SEGNP_F();
+extern void STACK_F();
+extern void GPFLT_F();
+extern void PGFLT_F();
+extern void FPERR_F();
+extern void ALIGN_F();
+extern void MCHK_F();
+extern void SIMDERR_F();
+extern void SYSCALL_F();
+extern void DEFAULT_F();
+
+
 
 /* For debugging, so print_trapframe can distinguish between printing
  * a saved trapframe and printing the current trapframe and print some
@@ -68,6 +101,27 @@ trap_init(void)
 	// LAB 3: Your code here.
 	idt_pd.pd_lim = sizeof(idt)-1;
 	idt_pd.pd_base = (uint64_t)idt;
+
+	SETGATE(idt[T_DIVIDE], 0, GD_KT, DIVIDE_F, 0);
+	SETGATE(idt[T_DEBUG], 0, GD_KT, DEBUG_F, 0);
+	SETGATE(idt[T_NMI], 0, GD_KT, NMI_F, 0);
+	SETGATE(idt[T_BRKPT], 0, GD_KT, BRKPT_F, 3);
+	SETGATE(idt[T_OFLOW], 0, GD_KT, OFLOW_F, 0);
+	SETGATE(idt[T_BOUND], 0, GD_KT, BOUND_F, 0);
+	SETGATE(idt[T_ILLOP], 0, GD_KT, ILLOP_F, 0);
+	SETGATE(idt[T_DEVICE], 0, GD_KT, DEVICE_F, 0);
+	SETGATE(idt[T_DBLFLT], 0, GD_KT, DBLFLT_F, 0);
+	SETGATE(idt[T_TSS], 0, GD_KT, TSS_F, 0);
+	SETGATE(idt[T_SEGNP], 0, GD_KT, SEGNP_F, 0);
+	SETGATE(idt[T_STACK], 0, GD_KT, STACK_F, 0);
+	SETGATE(idt[T_GPFLT], 0, GD_KT, GPFLT_F, 0);
+	SETGATE(idt[T_PGFLT], 0, GD_KT, PGFLT_F, 0);
+	SETGATE(idt[T_FPERR], 0, GD_KT, FPERR_F, 0);
+	SETGATE(idt[T_ALIGN], 0, GD_KT, ALIGN_F, 0);
+	SETGATE(idt[T_MCHK], 0, GD_KT, MCHK_F, 0);
+	SETGATE(idt[T_SIMDERR], 0, GD_KT, SIMDERR_F, 0);
+	SETGATE(idt[T_SYSCALL], 0, GD_KT, SYSCALL_F, 3);
+	
 	// Per-CPU setup
 	trap_init_percpu();
 }
@@ -150,6 +204,33 @@ trap_dispatch(struct Trapframe *tf)
 	// Handle processor exceptions.
 	// LAB 3: Your code here.
 
+
+
+	if (tf->tf_trapno == T_PGFLT) {
+		page_fault_handler(tf);
+		return;
+	}
+
+	if (tf->tf_trapno == T_BRKPT) {
+		monitor(tf);
+		return;
+	}
+
+	if (tf->tf_trapno == T_SYSCALL) {
+		tf->tf_regs.reg_rax = syscall(
+			tf->tf_regs.reg_rax,
+			tf->tf_regs.reg_rdx,
+			tf->tf_regs.reg_rcx,
+			tf->tf_regs.reg_rbx,
+			tf->tf_regs.reg_rdi,
+			tf->tf_regs.reg_rsi
+			);
+		return;
+	}
+
+
+
+
 	// Unexpected trap: The user process or the kernel has a bug.
 	print_trapframe(tf);
 	if (tf->tf_cs == GD_KT)
@@ -211,6 +292,11 @@ page_fault_handler(struct Trapframe *tf)
 	// Handle kernel-mode page faults.
 
 	// LAB 3: Your code here.
+
+	if((tf->tf_cs & 3) != 3)
+		panic("invalid page fault in kernel mode");
+
+
 
 	// We've already handled kernel-mode exceptions, so if we get here,
 	// the page fault happened in user mode.

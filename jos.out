@@ -1,5 +1,5 @@
-*** Now run 'gdb'.
-***
++ ld obj/kern/kernel
++ mk obj/kern/kernel.img
 6828 decimal is XXX octal!
 
 e820 MEMORY MAP
@@ -14,9 +14,12 @@ Physical memory: 256M available, base = 636K, extended = 261120K, npages = 65536
 Pages limited to 3276800 by upage address range (12800MB), Pages limited to 134201344 by remapped phys mem (524224MB)
 check_page_alloc() succeeded!
 check_page() succeeded!
-check_page_alloc() succeeded!
-check_page() succeeded!
 check_boot_pml4e() succeeded!
+[00000000] new env 00001000
+Incoming TRAP frame at 0x8003ffff40
+[00001000] user_mem_check assertion failure for va 800420000c
+[00001000] free env 00001000
+Destroyed the only environment - nothing more to do!
 Welcome to the JOS kernel monitor!
 Type 'help' for a list of commands.
-qemu: terminating on signal 15 from pid 8881
+qemu: terminating on signal 15 from pid 6494
