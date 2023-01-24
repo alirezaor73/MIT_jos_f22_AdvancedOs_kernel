@@ -1,0 +1,198 @@
++ ld obj/kern/kernel
++ mk obj/kern/kernel.img
+6828 decimal is XXX octal!
+
+e820 MEMORY MAP
+size: 20, address: 0x0000000000000000, length: 0x000000000009fc00, type: 1
+size: 20, address: 0x000000000009fc00, length: 0x0000000000000400, type: 2
+size: 20, address: 0x00000000000f0000, length: 0x0000000000010000, type: 2
+size: 20, address: 0x0000000000100000, length: 0x000000000fefe000, type: 1
+size: 20, address: 0x000000000fffe000, length: 0x0000000000002000, type: 2
+size: 20, address: 0x00000000fffc0000, length: 0x0000000000040000, type: 2
+
+Physical memory: 256M available, base = 636K, extended = 261120K, npages = 65536
+Pages limited to 3276800 by upage address range (12800MB), Pages limited to 134201344 by remapped phys mem (524224MB)
+check_page_alloc() succeeded!
+check_page() succeeded!
+check_boot_pml4e() succeeded!
+Found boot cpu..
+type: 0 apicid:0 version:17 signature:80040f0b60 feature:78bfbf9 flags:3 reserved:80040f0b68
+SMP: CPU 0 found 1 CPU(s)
+enabled interrupts: 1 2
+[00000000] new env 00001000
+fault deadbeef
+this string was faulted in at deadbeef
+fault cafebffe
+fault cafec000
+fault 0
+fault 1000
+fault 2000
+fault 3000
+fault 4000
+fault 5000
+fault 6000
+fault 7000
+fault 8000
+fault 9000
+fault a000
+fault b000
+fault c000
+fault d000
+fault e000
+fault f000
+fault 10000
+fault 11000
+fault 12000
+fault 13000
+fault 14000
+fault 15000
+fault 16000
+fault 17000
+fault 18000
+fault 19000
+fault 1a000
+fault 1b000
+fault 1c000
+fault 1d000
+fault 1e000
+fault 1f000
+fault 20000
+fault 21000
+fault 22000
+fault 23000
+fault 24000
+fault 25000
+fault 26000
+fault 27000
+fault 28000
+fault 29000
+fault 2a000
+fault 2b000
+fault 2c000
+fault 2d000
+fault 2e000
+fault 2f000
+fault 30000
+fault 31000
+fault 32000
+fault 33000
+fault 34000
+fault 35000
+fault 36000
+fault 37000
+fault 38000
+fault 39000
+fault 3a000
+fault 3b000
+fault 3c000
+fault 3d000
+fault 3e000
+fault 3f000
+fault 40000
+fault 41000
+fault 42000
+fault 43000
+fault 44000
+fault 45000
+fault 46000
+fault 47000
+fault 48000
+fault 49000
+fault 4a000
+fault 4b000
+fault 4c000
+fault 4d000
+fault 4e000
+fault 4f000
+fault 50000
+fault 51000
+fault 52000
+fault 53000
+fault 54000
+fault 55000
+fault 56000
+fault 57000
+fault 58000
+fault 59000
+fault 5a000
+fault 5b000
+fault 5c000
+fault 5d000
+fault 5e000
+fault 5f000
+fault 60000
+fault 61000
+fault 62000
+fault 63000
+fault 64000
+fault 65000
+fault 66000
+fault 67000
+fault 68000
+fault 69000
+fault 6a000
+fault 6b000
+fault 6c000
+fault 6d000
+fault 6e000
+fault 6f000
+fault 70000
+fault 71000
+fault 72000
+fault 73000
+fault 74000
+fault 75000
+fault 76000
+fault 77000
+fault 78000
+fault 79000
+fault 7a000
+fault 7b000
+fault 7c000
+fault 7d000
+fault 7e000
+fault 7f000
+fault 80000
+fault 81000
+fault 82000
+fault 83000
+fault 84000
+fault 85000
+fault 86000
+fault 87000
+fault 88000
+fault 89000
+fault 8a000
+fault 8b000
+fault 8c000
+fault 8d000
+fault 8e000
+fault 8f000
+fault 90000
+fault 91000
+fault 92000
+fault 93000
+fault 94000
+fault 95000
+fault 96000
+fault 97000
+fault 98000
+fault 99000
+fault 9a000
+fault 9b000
+fault 9c000
+fault 9d000
+fault 9e000
+fault 9f000
+fault a0000
+fault a1000
+fault a2000
+fault a3000
+fault a4000
+fault a5000
+fault a6000
+fault a7000
+fault a8000
+fault a9000
+fault aa000
+qemu: terminating on signal 15 from pid 5844
