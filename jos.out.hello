@@ -1,0 +1,53 @@
++ ld obj/kern/kernel
++ mk obj/kern/kernel.img
+6828 decimal is XXX octal!
+
+e820 MEMORY MAP
+size: 20, address: 0x0000000000000000, length: 0x000000000009fc00, type: 1
+size: 20, address: 0x000000000009fc00, length: 0x0000000000000400, type: 2
+size: 20, address: 0x00000000000f0000, length: 0x0000000000010000, type: 2
+size: 20, address: 0x0000000000100000, length: 0x000000000fefe000, type: 1
+size: 20, address: 0x000000000fffe000, length: 0x0000000000002000, type: 2
+size: 20, address: 0x00000000fffc0000, length: 0x0000000000040000, type: 2
+
+Physical memory: 256M available, base = 636K, extended = 261120K, npages = 65536
+Pages limited to 3276800 by upage address range (12800MB), Pages limited to 134201344 by remapped phys mem (524224MB)
+check_page_alloc() succeeded!
+check_page() succeeded!
+check_boot_pml4e() succeeded!
+[00000000] new env 00001000
+Incoming TRAP frame at 0x8003ffff40
+hello, world
+Incoming TRAP frame at 0x8003ffff40
+[00001000] user fault va 000000c8 ip 0080007a
+TRAP frame at 0x80043c0000
+  r15  0x00000000
+  r14  0x00000000
+  r13  0x00000000
+  r12  0x00000000
+  r11  0x00000000
+  r10  0x00000000
+  r9  0x00000000
+  r8  0x00000000
+  rdi  0x00000000
+  rsi  0x00000000
+  rbp  0xef7fdfc0
+  rbx  0x00000000
+  rdx  0xef7fdd88
+  rcx  0x0000000d
+  rax  0x00000000
+  es   0x----0023
+  ds   0x----0023
+  trap 0x0000000e Page Fault
+  cr2  0x000000c8
+  err  0x00000004 [user, read, not-present]
+  rip  0x0080007a
+  cs   0x----001b
+  flag 0x00000002
+  rsp  0xef7fdfb0
+  ss   0x----0023
+[00001000] free env 00001000
+Destroyed the only environment - nothing more to do!
+Welcome to the JOS kernel monitor!
+Type 'help' for a list of commands.
+qemu: terminating on signal 15 from pid 6220
