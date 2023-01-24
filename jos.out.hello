@@ -50,4 +50,4 @@ TRAP frame at 0x80043c0000
 Destroyed the only environment - nothing more to do!
 Welcome to the JOS kernel monitor!
 Type 'help' for a list of commands.
-qemu: terminating on signal 15 from pid 6220
+qemu: terminating on signal 15 from pid 4119

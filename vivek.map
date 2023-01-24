@@ -539,7 +539,7 @@ Linker script and memory map
  .debug_abbrev  0x0000000000001fd3      0x28a obj/kern/libdwarf_lineno.o
  .debug_abbrev  0x000000000000225d      0x21b obj/kern/elf_rw.o
 
-.debug_line     0x0000000000000000     0x2d7b
+.debug_line     0x0000000000000000     0x2d7d
  *(.debug_line)
  .debug_line    0x0000000000000000       0x99 obj/kern/bootstrap.o
  .debug_line    0x0000000000000099       0x51 obj/kern/entry.o
@@ -552,15 +552,15 @@ Linker script and memory map
  .debug_line    0x000000000000155f       0x7f obj/kern/printf.o
  .debug_line    0x00000000000015de      0x236 obj/kern/trap.o
  .debug_line    0x0000000000001814       0x64 obj/kern/trapentry.o
- .debug_line    0x0000000000001878       0xd7 obj/kern/syscall.o
- .debug_line    0x000000000000194f      0x1c3 obj/kern/kdebug.o
- .debug_line    0x0000000000001b12      0x285 obj/kern/printfmt.o
- .debug_line    0x0000000000001d97       0x7a obj/kern/readline.o
- .debug_line    0x0000000000001e11      0x1e8 obj/kern/string.o
- .debug_line    0x0000000000001ff9      0x45a obj/kern/libdwarf_rw.o
- .debug_line    0x0000000000002453      0x4f9 obj/kern/libdwarf_frame.o
- .debug_line    0x000000000000294c      0x206 obj/kern/libdwarf_lineno.o
- .debug_line    0x0000000000002b52      0x229 obj/kern/elf_rw.o
+ .debug_line    0x0000000000001878       0xd9 obj/kern/syscall.o
+ .debug_line    0x0000000000001951      0x1c3 obj/kern/kdebug.o
+ .debug_line    0x0000000000001b14      0x285 obj/kern/printfmt.o
+ .debug_line    0x0000000000001d99       0x7a obj/kern/readline.o
+ .debug_line    0x0000000000001e13      0x1e8 obj/kern/string.o
+ .debug_line    0x0000000000001ffb      0x45a obj/kern/libdwarf_rw.o
+ .debug_line    0x0000000000002455      0x4f9 obj/kern/libdwarf_frame.o
+ .debug_line    0x000000000000294e      0x206 obj/kern/libdwarf_lineno.o
+ .debug_line    0x0000000000002b54      0x229 obj/kern/elf_rw.o
 
 .debug_frame
  *(.debug_frame)
