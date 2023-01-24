@@ -5,6 +5,7 @@
 #include <inc/trap.h>
 #include <kern/macro.h>
 
+#include <kern/picirq.h>
 
 
 ###################################################################
@@ -49,27 +50,7 @@
    Find the PUSHA,POPA macros in kern/macro.h. Since amd64 doesn't support
    pusha,popa so you will find these macros handy.
  */
-	
-	TRAPHANDLER_NOEC(DIVIDE_F, T_DIVIDE)
- 	TRAPHANDLER_NOEC(DEBUG_F, T_DEBUG)
- 	TRAPHANDLER_NOEC(NMI_F, T_NMI)
- 	TRAPHANDLER_NOEC(BRKPT_F, T_BRKPT)
- 	TRAPHANDLER_NOEC(OFLOW_F, T_OFLOW)
- 	TRAPHANDLER_NOEC(BOUND_F, T_BOUND)
- 	TRAPHANDLER_NOEC(ILLOP_F, T_ILLOP)
- 	TRAPHANDLER_NOEC(DEVICE_F, T_DEVICE)
- 	TRAPHANDLER(DBLFLT_F, T_DBLFLT)
- 	TRAPHANDLER(TSS_F, T_TSS)
- 	TRAPHANDLER(SEGNP_F, T_SEGNP)
- 	TRAPHANDLER(STACK_F, T_STACK)
- 	TRAPHANDLER(GPFLT_F, T_GPFLT)
- 	TRAPHANDLER(PGFLT_F, T_PGFLT)
- 	TRAPHANDLER_NOEC(FPERR_F, T_FPERR)
- 	TRAPHANDLER(ALIGN_F, T_ALIGN)
- 	TRAPHANDLER_NOEC(MCHK_F, T_MCHK)
- 	TRAPHANDLER_NOEC(SIMDERR_F, T_SIMDERR)
- 	TRAPHANDLER_NOEC(SYSCALL_F, T_SYSCALL)
- 	TRAPHANDLER(DEFAULT_F, T_DEFAULT)
+
 
 
 /*
@@ -78,20 +59,4 @@
  * Hint: Be sure to review the x64 calling convention from lab1
  *       for how to pass a pointer to the trapframe.
  */
-
-
-	_alltraps:
-       	sub $16,%rsp
-       	movw %ds,8(%rsp)
-       	movw %es,0(%rsp)
-       	PUSHA
-       	movq $GD_KD, %rax
-       	movq %rax, %es
-       	movq %rax, %ds
-       	movq %rsp, %rdi
-       	call trap
-
-
-
-
 
