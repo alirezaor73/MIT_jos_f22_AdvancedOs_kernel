@@ -63,7 +63,7 @@ printnum(void (*putch)(int, void*), void *putdat,
 static unsigned long long
 getuint(va_list *ap, int lflag)
 {
-	unsigned long long x;    
+	unsigned long long x;
 	if (lflag >= 2)
 		x= va_arg(*ap, unsigned long long);
 	else if (lflag)

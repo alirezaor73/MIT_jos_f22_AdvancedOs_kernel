@@ -48,6 +48,14 @@ bc_pgfault(struct UTrapframe *utf)
 	// Hint: first round addr to page boundary.
 	//
 	// LAB 5: your code here:
+	addr = (void *)ROUNDDOWN(addr, PGSIZE);
+	r = sys_page_alloc(0, addr, PTE_U | PTE_W | PTE_P);
+	if (r < 0 )
+		panic("bc_pgfault: sys_page_alloc fail\n");
+	r = ide_read(blockno*BLKSECTS, addr, BLKSECTS);
+	if (r < 0)
+		panic("bc_pgfault: ide_read error\n");
+
 
 
 
@@ -80,7 +88,18 @@ flush_block(void *addr)
 		panic("flush_block of bad va %08x", addr);
 
 	// LAB 5: Your code here.
-	panic("flush_block not implemented");
+
+	int r;
+	if (!va_is_mapped(addr) || !va_is_dirty(addr))
+		return ;
+	addr = (void *)ROUNDDOWN(addr, PGSIZE);
+	if (ide_write(blockno*BLKSECTS, addr, BLKSECTS) < 0)
+		panic("flush_block: ide_write error\n");
+
+	if ((r = sys_page_map(0, addr, 0, addr, uvpt[PGNUM(addr)] & PTE_SYSCALL)) < 0)
+		panic("in bc_pgfault, sys_page_map: %e", r);
+
+	//panic("flush_block not implemented");
 }
 
 // Test that the block cache works, by smashing the superblock and

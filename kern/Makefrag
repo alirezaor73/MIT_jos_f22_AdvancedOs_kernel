@@ -7,7 +7,7 @@
 
 OBJDIRS += kern
 
-KERN_LDFLAGS := $(LDFLAGS) -T kern/kernel.ld 
+KERN_LDFLAGS := $(LDFLAGS) -T kern/kernel.ld
 
 KERN_LDFLAGS += -nostdlib --no-gc-sections --print-gc-sections -Map=vivek.map
 
@@ -51,7 +51,21 @@ KERN_SRCFILES +=	kern/mpentry.S \
 KERN_SRCFILES := $(wildcard $(KERN_SRCFILES))
 
 # Binary program images to embed within the kernel.
-KERN_BINFILES :=	user/hello
+# Binary files for LAB3
+KERN_BINFILES :=	user/hello \
+			user/buggyhello \
+			user/buggyhello2 \
+			user/evilhello \
+			user/testbss \
+			user/divzero \
+			user/breakpoint \
+			user/softint \
+			user/badsegment \
+			user/faultread \
+			user/faultreadkernel \
+			user/faultwrite \
+			user/faultwritekernel
+
 # Binary files for LAB4
 KERN_BINFILES +=	user/idle \
 			user/yield \

@@ -19,6 +19,49 @@ struct Taskstate ts;
 extern struct Segdesc gdt[];
 extern long gdt_pd;
 
+
+extern void DIVIDE_F();
+extern void DEBUG_F();
+extern void NMI_F();
+extern void BRKPT_F();
+extern void OFLOW_F();
+extern void BOUND_F();
+extern void ILLOP_F();
+extern void DEVICE_F();
+extern void DBLFLT_F();
+extern void TSS_F();
+extern void SEGNP_F();
+extern void STACK_F();
+extern void GPFLT_F();
+extern void PGFLT_F();
+extern void FPERR_F();
+extern void ALIGN_F();
+extern void MCHK_F();
+extern void SIMDERR_F();
+extern void SYSCALL_F();
+extern void DEFAULT_F();
+
+// LAB 4
+
+extern void IRQ0_HANDLER();
+extern void IRQ1_HANDLER();
+extern void IRQ2_HANDLER();
+extern void IRQ3_HANDLER();
+extern void IRQ4_HANDLER();
+extern void IRQ5_HANDLER();
+extern void IRQ6_HANDLER();
+extern void IRQ7_HANDLER();
+extern void IRQ8_HANDLER();
+extern void IRQ9_HANDLER();
+extern void IRQ10_HANDLER();
+extern void IRQ11_HANDLER();
+extern void IRQ12_HANDLER();
+extern void IRQ13_HANDLER();
+extern void IRQ14_HANDLER();
+extern void IRQ15_HANDLER();
+void IRQ_ERROR_HANDLER();
+
+
 /* For debugging, so print_trapframe can distinguish between printing
  * a saved trapframe and printing the current trapframe and print some
  * additional information in the latter case.
@@ -75,6 +118,45 @@ trap_init(void)
 	// LAB 3: Your code here.
 	idt_pd.pd_lim = sizeof(idt)-1;
 	idt_pd.pd_base = (uint64_t)idt;
+
+	SETGATE(idt[T_DIVIDE], 0, GD_KT, DIVIDE_F, 0);
+	SETGATE(idt[T_DEBUG], 0, GD_KT, DEBUG_F, 0);
+	SETGATE(idt[T_NMI], 0, GD_KT, NMI_F, 0);
+	SETGATE(idt[T_BRKPT], 0, GD_KT, BRKPT_F, 3);
+	SETGATE(idt[T_OFLOW], 0, GD_KT, OFLOW_F, 0);
+	SETGATE(idt[T_BOUND], 0, GD_KT, BOUND_F, 0);
+	SETGATE(idt[T_ILLOP], 0, GD_KT, ILLOP_F, 0);
+	SETGATE(idt[T_DEVICE], 0, GD_KT, DEVICE_F, 0);
+	SETGATE(idt[T_DBLFLT], 0, GD_KT, DBLFLT_F, 0);
+	SETGATE(idt[T_TSS], 0, GD_KT, TSS_F, 0);
+	SETGATE(idt[T_SEGNP], 0, GD_KT, SEGNP_F, 0);
+	SETGATE(idt[T_STACK], 0, GD_KT, STACK_F, 0);
+	SETGATE(idt[T_GPFLT], 0, GD_KT, GPFLT_F, 0);
+	SETGATE(idt[T_PGFLT], 0, GD_KT, PGFLT_F, 0);
+	SETGATE(idt[T_FPERR], 0, GD_KT, FPERR_F, 0);
+	SETGATE(idt[T_ALIGN], 0, GD_KT, ALIGN_F, 0);
+	SETGATE(idt[T_MCHK], 0, GD_KT, MCHK_F, 0);
+	SETGATE(idt[T_SIMDERR], 0, GD_KT, SIMDERR_F, 0);
+	SETGATE(idt[T_SYSCALL], 0, GD_KT, SYSCALL_F, 3);
+
+	// LAB 4
+	SETGATE(idt[IRQ_OFFSET], 0, GD_KT, IRQ0_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 1], 0, GD_KT, IRQ1_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 2], 0, GD_KT, IRQ2_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 3], 0, GD_KT, IRQ3_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 4], 0, GD_KT, IRQ4_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 5], 0, GD_KT, IRQ5_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 6], 0, GD_KT, IRQ6_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 7], 0, GD_KT, IRQ7_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 8], 0, GD_KT, IRQ8_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 9], 0, GD_KT, IRQ9_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 10], 0, GD_KT, IRQ10_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 11], 0, GD_KT, IRQ11_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 12], 0, GD_KT, IRQ12_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 13], 0, GD_KT, IRQ13_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 14], 0, GD_KT, IRQ14_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + 15], 0, GD_KT, IRQ15_HANDLER, 0);
+	SETGATE(idt[IRQ_OFFSET + IRQ_ERROR], 0, GD_KT, IRQ_ERROR_HANDLER, 0);
 	// Per-CPU setup
 	trap_init_percpu();
 }
@@ -105,17 +187,23 @@ trap_init_percpu(void)
 	// user space on that CPU.
 	//
 	// LAB 4: Your code here:
+	uint8_t id =  thiscpu->cpu_id;
+
+	thiscpu->cpu_ts.ts_esp0 = KSTACKTOP - id * (KSTKSIZE + KSTKGAP);
+	struct Segdesc *seg = &gdt[(GD_TSS0 >> 3) + 2*id];
+	SETTSS((struct SystemSegdesc64 *)seg, STS_T64A, (uint64_t) (&thiscpu->cpu_ts),sizeof(struct Taskstate), 0);
+	ltr(GD_TSS0 + 2 * (id << 3));
 
 
 	// Setup a TSS so that we get the right stack
 	// when we trap to the kernel.
-	ts.ts_esp0 = KSTACKTOP;
+	//ts.ts_esp0 = KSTACKTOP;
 
 	// Initialize the TSS slot of the gdt.
-	SETTSS((struct SystemSegdesc64 *)((gdt_pd>>16)+40),STS_T64A, (uint64_t) (&ts),sizeof(struct Taskstate), 0);
+	//SETTSS((struct SystemSegdesc64 *)((gdt_pd>>16)+40),STS_T64A, (uint64_t) (&ts),sizeof(struct Taskstate), 0);
 	// Load the TSS selector (like other segment selectors, the
 	// bottom three bits are special; we leave them 0)
-	ltr(GD_TSS0);
+	//ltr(GD_TSS0);
 
 	// Load the IDT
 	lidt(&idt_pd);
@@ -180,6 +268,28 @@ trap_dispatch(struct Trapframe *tf)
 	// Handle processor exceptions.
 	// LAB 3: Your code here.
 
+
+	if (tf->tf_trapno == T_PGFLT) {
+		page_fault_handler(tf);
+		return;
+	}
+
+	if (tf->tf_trapno == T_BRKPT) {
+		monitor(tf);
+		return;
+	}
+
+	if (tf->tf_trapno == T_SYSCALL) {
+		tf->tf_regs.reg_rax = syscall(
+			tf->tf_regs.reg_rax,
+			tf->tf_regs.reg_rdx,
+			tf->tf_regs.reg_rcx,
+			tf->tf_regs.reg_rbx,
+			tf->tf_regs.reg_rdi,
+			tf->tf_regs.reg_rsi
+			);
+		return;
+	}
 	// Handle spurious interrupts
 	// The hardware sometimes raises these because of noise on the
 	// IRQ line or other reasons. We don't care.
@@ -192,6 +302,11 @@ trap_dispatch(struct Trapframe *tf)
 	// Handle clock interrupts. Don't forget to acknowledge the
 	// interrupt using lapic_eoi() before calling the scheduler!
 	// LAB 4: Your code here.
+	if (tf->tf_trapno == IRQ_OFFSET + IRQ_TIMER) {
+    lapic_eoi();
+    sched_yield();
+    panic("sched_yield failed");
+  }
 
 	// Handle keyboard and serial interrupts.
 	// LAB 5: Your code here.
@@ -228,11 +343,13 @@ trap(struct Trapframe *tf)
 	// the interrupt path.
 	assert(!(read_eflags() & FL_IF));
 
+	//cprintf("Incoming TRAP frame at %p\n", tf);
 	if ((tf->tf_cs & 3) == 3) {
 		// Trapped from user mode.
 		// Acquire the big kernel lock before doing any
 		// serious kernel work.
 		// LAB 4: Your code here.
+		lock_kernel();
 		assert(curenv);
 
 		// Garbage collect if current enviroment is a zombie
@@ -279,6 +396,12 @@ page_fault_handler(struct Trapframe *tf)
 
 	// LAB 3: Your code here.
 
+	if((tf->tf_cs & 3) != 3)
+		panic("invalid page fault in kernel mode");
+
+	// We've already handled kernel-mode exceptions, so if we get here,
+	// the page fault happened in user mode.
+
 	// We've already handled kernel-mode exceptions, so if we get here,
 	// the page fault happened in user mode.
 
@@ -312,6 +435,33 @@ page_fault_handler(struct Trapframe *tf)
 	//   (the 'tf' variable points at 'curenv->env_tf').
 
 	// LAB 4: Your code here.
+
+	if(curenv->env_pgfault_upcall)
+	{
+		uintptr_t utf_addr;
+
+		if(UXSTACKTOP-PGSIZE <= tf->tf_rsp && tf->tf_rsp <= UXSTACKTOP-1)
+			utf_addr = tf->tf_rsp - sizeof(struct UTrapframe) - 4;
+		else
+			utf_addr = UXSTACKTOP - sizeof(struct UTrapframe);
+
+
+		user_mem_assert(curenv, (void *)utf_addr, 1, PTE_W);
+
+		struct UTrapframe *utf = (struct UTrapframe *)utf_addr;
+
+		utf->utf_fault_va = fault_va;
+		utf->utf_err = tf->tf_err;
+		utf->utf_regs = tf->tf_regs;
+		utf->utf_rip = tf->tf_rip;
+		utf->utf_eflags = tf->tf_eflags;
+		utf->utf_rsp = tf->tf_rsp;
+
+		curenv->env_tf.tf_rip = (uintptr_t)curenv->env_pgfault_upcall;
+		curenv->env_tf.tf_rsp = utf_addr;
+		env_run(curenv);
+	}
+
 
 	// Destroy the environment that caused the fault.
 	cprintf("[%08x] user fault va %08x ip %08x\n",

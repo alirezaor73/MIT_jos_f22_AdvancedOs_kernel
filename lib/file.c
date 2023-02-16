@@ -70,7 +70,28 @@ open(const char *path, int mode)
 	// file descriptor.
 
 	// LAB 5: Your code here
-	panic ("open not implemented");
+
+	int r;
+	struct Fd *fd;
+
+	if (strlen(path) >= MAXPATHLEN)
+		return -E_BAD_PATH;
+
+	if ((r = fd_alloc(&fd)) < 0)
+		return r;
+
+	strcpy(fsipcbuf.open.req_path, path);
+	fsipcbuf.open.req_omode = mode;
+
+	if ((r = fsipc(FSREQ_OPEN, fd)) < 0) {
+		fd_close(fd, 0);
+		return r;
+	}
+
+	return fd2num(fd);
+
+
+	// panic ("open not implemented");
 }
 
 // Flush the file descriptor.  After this the fileid is invalid.
@@ -101,7 +122,19 @@ devfile_read(struct Fd *fd, void *buf, size_t n)
 	// bytes read will be written back to fsipcbuf by the file
 	// system server.
 	// LAB 5: Your code here
-	panic("devfile_read not implemented");
+
+	int r;
+
+	fsipcbuf.read.req_fileid = fd->fd_file.id;
+	fsipcbuf.read.req_n = n;
+	if ((r = fsipc(FSREQ_READ, NULL)) < 0)
+		return r;
+	assert(r <= n);
+	assert(r <= PGSIZE);
+	memmove(buf, fsipcbuf.readRet.ret_buf, r);
+	return r;
+
+	// panic("devfile_read not implemented");
 }
 
 // Write at most 'n' bytes from 'buf' to 'fd' at the current seek position.
@@ -117,7 +150,20 @@ devfile_write(struct Fd *fd, const void *buf, size_t n)
 	// remember that write is always allowed to write *fewer*
 	// bytes than requested.
 	// LAB 5: Your code here
-	panic("devfile_write not implemented");
+
+	int r;
+
+	fsipcbuf.write.req_fileid = fd->fd_file.id;
+	fsipcbuf.write.req_n = n;
+	assert(n <= PGSIZE - (sizeof(int) + sizeof(size_t)));
+	memcpy(fsipcbuf.write.req_buf, buf, n);
+	if ((r = fsipc(FSREQ_WRITE, NULL)) < 0)
+		return r;
+	assert(r <= n);
+	return r;
+
+
+	// panic("devfile_write not implemented");
 }
 
 static int
@@ -177,14 +223,14 @@ copy(char *src, char *dest)
 		cprintf("cp open src error:%e\n", fd_src);
 		return fd_src;
 	}
-	
+
 	fd_dest = open(dest, O_CREAT | O_WRONLY);
 	if (fd_dest < 0) {	//error
 		cprintf("cp create dest  error:%e\n", fd_dest);
 		close(fd_src);
 		return fd_dest;
 	}
-	
+
 	while ((read_size = read(fd_src, buffer, 512)) > 0) {
 		write_size = write(fd_dest, buffer, read_size);
 		if (write_size < 0) {
@@ -192,7 +238,7 @@ copy(char *src, char *dest)
 			close(fd_src);
 			close(fd_dest);
 			return write_size;
-		}		
+		}
 	}
 	if (read_size < 0) {
 		cprintf("cp read src error:%e\n", read_size);
@@ -203,6 +249,6 @@ copy(char *src, char *dest)
 	close(fd_src);
 	close(fd_dest);
 	return 0;
-	
+
 }
 
