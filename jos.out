@@ -32,42 +32,43 @@ Device 1 presence: 1
 19
 23
 29
+block cache is good
+superblock is good
 31
 37
 41
 43
+bitmap is good
 47
 53
 59
 61
-block cache is good
-superblock is good
+alloc_block is good
 67
 71
+file_open is good
 73
 79
 83
 89
-bitmap is good
 97
-alloc_block is good
+file_get_block is good
 101
 103
 107
 109
+file_flush is good
 113
-file_open is good
 127
+file_truncate is good
 131
 137
 139
-file_get_block is good
 149
 151
 157
 163
 167
-file_flush is good
 173
 179
 181
@@ -75,11 +76,11 @@ file_flush is good
 193
 197
 199
-file_truncate is good
 211
 223
 227
 229
+file rewrite is good
 233
 239
 241
@@ -96,7 +97,6 @@ file_truncate is good
 311
 313
 317
-file rewrite is good
 331
 337
 347
@@ -200,4 +200,4 @@ file rewrite is good
 991
 997
 1009
-qemu: terminating on signal 15 from pid 4252
+qemu: terminating on signal 15 from pid 4364

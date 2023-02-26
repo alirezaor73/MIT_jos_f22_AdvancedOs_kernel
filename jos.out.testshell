@@ -60,4 +60,4 @@ TRAP frame at 0x8004844240 from CPU 0
   flag 0x00000202
   rsp  0xef7fda00
   ss   0x----0023
-qemu: terminating on signal 15 from pid 4160
+qemu: terminating on signal 15 from pid 4263
